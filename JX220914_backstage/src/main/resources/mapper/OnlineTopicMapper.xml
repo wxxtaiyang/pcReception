@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.OnlineTopicMapper">
+    <select id="queryOnlinetopicById" resultMap="onlinet">
+        select * from pc_onlinetopic where fieldid=#{id} limit #{limit},#{size}
+    </select>
+
+    <select id="queryOptionByOnlineId" resultType="pcOption">
+        select * from pc_option where onlineid=#{onlineid}
+    </select>
+
+    <resultMap id="onlinet" type="pcOnlinetopic">
+        <id property="onlineid" column="onlineid"/>
+        <result property="fieldid" column="fieldid"/>
+        <result property="onlinecontext" column="onlinecontext"/>
+        <collection property="options" javaType="list" ofType="pcOption" column="onlineid"
+                    select="queryOptionByOnlineId"/>
+<!--            <id property="optionid" column="optionid"/>-->
+<!--            <result property="optioncontext" column="optioncontext"/>-->
+<!--            <result property="optionscore" column="optionscore"/>-->
+    </resultMap>
+
+    <select id="countOnlieOnlinetopicById" resultType="int">
+        select count(onlineid) from pc_onlinetopic where fieldid=#{id}
+    </select>
+
+    <insert id="insertOnlietopic" keyProperty="onlineid" useGeneratedKeys="true">
+        insert into pc_onlinetopic values(null,#{fieldid},#{onlinecontext})
+    </insert>
+
+    <insert id="insertOnlietopicOptions">
+        insert into pc_option values
+        <foreach collection="list" item="item" separator=",">
+            (null,#{item.onlineid},#{item.optioncontext},#{item.optionscore})
+        </foreach>
+    </insert>
+
+    <delete id="deleteOnlineTopById">
+        delete from pc_onlinetopic where onlineid=#{id}
+    </delete>
+
+    <update id="updateOnlineTopById">
+        update pc_onlinetopic set onlinecontext=#{onlinecontext} where onlineid=#{onlineid}
+    </update>
+
+    <delete id="deleteOptionsById">
+        delete from pc_option where onlineid=#{id}
+    </delete>
+</mapper>

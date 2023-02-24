@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="js/layui/css/layui.css">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .father{
+        text-align: center;
+        background: #f1f1f1;
+        box-shadow:1px 1px 10px #afafaf inset;
+        width: 615px;
+        padding: 20px;
+    }
+    .box{
+        margin: 10px;
+    }
+    .list{
+        border: 1px solid gainsboro;
+        float: left;
+        padding: 20px;
+        margin: 5px 5px;
+    }
+    .foolter{
+        clear: both;
+        padding: 10px 0;
+    }
+    .father span{
+        margin: 0 5px;
+        cursor: pointer;
+    }
+</style>
+<body>
+<div class="father">
+    <h1 style="margin:20px 0;">我的报告</h1>
+    <div class="box" id="box">
+    </div>
+    <div class="foolter">
+        <span onclick="upPage()">上一页</span>
+        <span id="pages">0/0</span>
+        <span onclick="downPage()">下一页</span>
+    </div>
+</div>
+</body>
+<script src="js/layui/layui.js"></script>
+<script src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    ctxPath = /*[[@{/}]]*/ '';
+    /*]]>*/
+</script>
+<script>
+    var page = 1;
+    var pageSize = 0;
+    var size = 6;
+    $(function () {
+        queryReport()
+    });
+    function queryReport() {
+        $.ajax({
+            url:'report/query',
+            data:{
+                page:page,
+                size:size
+            },
+            type:'post',
+            dataType:'json',
+            success:function (res) {
+                pageSize = Math.ceil(res.count*1.0/size);
+                var html = '';
+                res.data.forEach((t,i)=>{
+                    var d = JSON.stringify(t).replace(/\"/g,"'");
+                    html+='<div class="list" onclick="showReport('+d+')">\n' +
+                        '            <p>'+t.createtime+'</p>\n' +
+                        '            <p>评测报告</p>\n' +
+                        '        </div>';
+                })
+                $('#box').html(html);
+                $('#pages').html(page+"/"+pageSize);
+            }
+        })
+    }
+    function upPage() {
+        if(page-1 > 0){
+            page--;
+            queryReport();
+        }
+    }
+    function downPage() {
+        if(page+1<pageSize){
+            page++;
+            queryReport();
+        }
+    }
+    function showReport(item){
+        console.log(item);
+        layer.open({
+            type: 2,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['600px', '550px'], //宽高
+            content: 'reportdetailed',
+            success:function(layero, index) {
+                var body=layer.getChildFrame('body',index);
+                body.find('#result').html(item.reportresult);
+                body.find('#context').html(item.reportcontext);
+            }
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.AdminMapper">
+    <select id="queryAdminById" resultType="pcAdmin">
+        select * from pc_admin where adminid=#{adminid}
+    </select>
+    <select id="queryFieldByAdminid" resultType="pcField">
+        select f.* from pc_admin_field af inner join pc_field f on af.fieldid=f.fieldid
+            where af.adminid=#{adminid}
+    </select>
+    <update id="updateAdminBalanceByAdminid">
+        update pc_admin set adminbalance=#{adminbalance} where adminid=#{adminid}
+    </update>
+</mapper>

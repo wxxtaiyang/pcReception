@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.ReportMapper">
+    <insert id="insertReport">
+        insert into pc_report
+            values(null,#{userid},#{fieldid},#{reportresult},#{reportcontext},#{score},now(),null)
+    </insert>
+
+    <select id="queryAllReportByUserId" resultType="pcReport">
+        select * from pc_report where userid=#{userid} limit #{index},#{size}
+    </select>
+
+    <select id="querySizeReportByUserId" resultType="int">
+        select count(reportid) from pc_report where userid=#{userid}
+    </select>
+</mapper>

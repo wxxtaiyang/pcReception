@@ -1,0 +1,32 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+.father{
+    text-align: center;
+    box-shadow:1px 1px 100px #afafaf inset;
+    padding: 40px 80px;
+    border-radius: 50px;
+}
+#toppic li{
+    margin: 20px 0;
+    font-size: 15px;
+    list-style:circle;
+    text-align: left;
+}
+.subject{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+.options{
+    height: 20px;
+    display: flex;
+    align-items: center;
+    margin-top:5px;
+    margin-left: 20px;
+}
+.options input{
+    margin-left: 20px;
+}

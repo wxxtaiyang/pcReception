@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="js/layui/css/layui.css">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        display: flex;
+        align-items: center;
+    }
+    .father{
+        width: 350px;
+        margin:0 auto;
+        text-align: center;
+        box-shadow:1px 1px 100px #afafaf inset;
+        padding: 40px;
+        border-radius: 50px;
+    }
+</style>
+<body>
+<div class="father layui-form">
+    <h1 style="margin:20px 0;">在线预约</h1>
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择框</label>
+        <div class="layui-input-inline">
+            <select name="fieldlist" lay-verify="required" id="fieldlist">
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <button class="layui-btn layui-btn-fluid" type="button" onclick="beiging()">开始评估</button>
+    </div>
+</div>
+</body>
+<script src="js/layui/layui.js"></script>
+<script src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    ctxPath = /*[[@{/}]]*/ '';
+    /*]]>*/
+</script>
+<script th:inline="none">
+    var form = layui.form;
+    $(function () {
+        $.ajax({
+            url:'field/query',
+            dataType:'json',
+            success:function (res) {
+                var hm='<option value=""></option>';
+                res.forEach((item,index)=>{
+                    hm+='<option value="'+item.fieldid+'">'+item.fieldname+'</option>'
+                });
+                $('#fieldlist').html(hm);
+                form.render('select');
+            }
+        })
+    })
+    function beiging() {
+        var url = encodeURI('online?fieldid='+$('#fieldlist').val());
+        $(location).attr('href',url);
+    }
+</script>
+</html>

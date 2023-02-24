@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="js/layui/css/layui.css">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        /* text-align: center; */
+    }
+
+    .father {
+        width: 700px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    #imgheader {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+    }
+
+    #backdrop {
+        width: 590px;
+        display: block;
+        word-break: break-all;
+    }
+    .reds{
+        background: #e34420!important;
+        color: #ffffff!important;
+    }
+    .reds:hover{
+        background: #e34420!important;
+        color: #ffffff!important;
+    }
+</style>
+
+<body>
+<h1>我要预约</h1>
+<div class="layui-form father" id="adminfield">
+    <div class="layui-inline">
+        <label class="layui-form-label">咨询领域：</label>
+        <div class="layui-input-block">
+            <select name="interest" lay-filter="field" id="field">
+            </select>
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">咨询师：</label>
+        <div class="layui-input-block">
+            <select name="interest" lay-filter="field" id="admin">
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item otherdata" style="text-align:left;margin-top: 10px;">
+        <img src="natural/logo.png" id="imgheader" class="layui-form-label">
+        <div class="layui-input-block" id="adminname">咨询师姓名：</div>
+        <div class="layui-input-block" id="school">毕业院校 职称</div>
+        <div class="layui-input-block" id="fields">擅长领域： xxx xxx</div>
+        <div class="layui-input-block" id="price">服务价格： xxx元/次</div>
+        <div id="backdrop" class="layui-input-block">专业背景：</div>
+    </div>
+    <div class="llayui-form-item otherdata" id="buttons">
+        <label class="layui-form-label">可约时间：</label>
+        <div class="layui-input-block">
+            <input type="text" name="date" id="date" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off"
+                   class="layui-input">
+        </div>
+        <div class="layui-input-block" style="margin-top:10px;">
+            <button class="layui-btn layui-btn-primary" >08:00~09:00</button>
+            <button class="layui-btn layui-btn-primary" >09:00~10:00</button>
+            <button class="layui-btn layui-btn-primary" >10:00~11:00</button>
+            <button class="layui-btn layui-btn-primary" >11:00~12:00</button>
+
+        </div>
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-primary" >14:00~15:00</button>
+            <button class="layui-btn layui-btn-primary" >15:00~16:00</button>
+            <button class="layui-btn layui-btn-primary" >16:00~17:00</button>
+            <button class="layui-btn layui-btn-primary" >17:00~18:00</button>
+        </div>
+    </div>
+    <div class="llayui-form-item otherdata">
+        <label class="layui-form-label">问题描述：</label>
+        <div class="layui-input-block">
+            <textarea type="text" name="pro" id="pro" class="layui-input" style="min-height:100px;"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="demo1"
+                    onclick="insertOrder()">提交</button>
+        </div>
+    </div>
+</div>
+</body>
+<script src="js/layui/layui.js"></script>
+<script src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    ctxPath = /*[[@{/}]]*/ '';
+    /*]]>*/
+</script>
+<script th:inline="none">
+    var our = parent.layer.getFrameIndex(window.name);
+    var laydate = layui.laydate;
+    var form = layui.form;
+    var time = 0;
+    var price = 0;
+
+    //常规用法
+    laydate.render({
+        elem: '#date',
+        showBottom:false,
+        min: 1,
+        done: function(value, date, endDate){
+            // layer.msg(value)
+            if($('#admin').val() == null){
+                layer.msg("请先选择咨询师，再点击日期",{icon:2})
+            }else{
+                queryDateTime(value);
+            }
+        },
+    });
+</script>
+<script src="js/addorder.js"></script>
+</html>

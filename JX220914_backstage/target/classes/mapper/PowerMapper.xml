@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.PowerMapper">
+    <select id="getPowerListByRole" resultType="pcPower">
+        select a.* from pc_power a inner join pc_role_power c on c.powerid = a.powerid
+                where c.roleid = #{roleid} order by a.powerid
+    </select>
+
+    <select id="getPowerListByNotRoleId" resultType="pcPower">
+        select a.*,b.powername fathername from pc_power a inner join pc_power b on a.prowerparent = b.powerid
+            where a.powerid not in(select a.powerid from pc_power a
+            inner join pc_role_power c on c.powerid = a.powerid where c.roleid = #{roleid})
+            order by a.prowerparent
+    </select>
+    
+    <delete id="deleteRolePower">
+        delete from pc_role_power where roleid=#{roleid}
+    </delete>
+
+    <insert id="addRolePower">
+        insert into pc_role_power values
+        <foreach collection="arr" item="item" index="i" separator=",">
+            (null,#{roleid},#{item})
+        </foreach>
+    </insert>
+</mapper>

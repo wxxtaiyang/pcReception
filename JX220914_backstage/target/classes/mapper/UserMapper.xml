@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.UserMapper">
+    <select id="selectUserByUserAcc" resultType="pcUser">
+        select * from pc_user where useracc=#{acc}
+    </select>
+
+    <select id="selectUserByUserPhone" resultType="pcUser">
+        select * from pc_user where userphone=#{phone}
+    </select>
+
+    <select id="queryUserByNameAndAcc" resultType="pcUser">
+        select * from pc_user
+        <where>
+            isdelete = 1
+            <if test="name != null">
+                and username like concat('%',#{name},'%')
+            </if>
+            <if test="state != -1">
+                and state=#{state}
+            </if>
+        </where>
+        order by username limit #{index},#{size}
+    </select>
+    <select id="userSizeByNameAndAcc" resultType="int">
+        select count(userid) from pc_user
+        <where>
+            isdelete=1
+            <if test="name != null">
+                and username like concat('%',#{name},'%')
+            </if>
+            <if test="state != -1">
+                and state=#{state}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateUserStateByUserId">
+        update pc_user set state = !state where userid=#{userid}
+    </update>
+
+    <update id="resetUserPwdByUserId">
+        update pc_user set userpwd=#{pwd} where userid=#{userid}
+    </update>
+
+    <update id="deleteUserByUserId">
+        update pc_user set isdelete=0 where userid=#{userid}
+    </update>
+
+    <select id="queryIdByUserName" resultType="int">
+        select userid from pc_user where username like concat('%',#{username},'%') and isdelete=1
+    </select>
+
+    <select id="queryUserById" resultType="pcUser">
+        select * from pc_user where userid=#{userid}
+    </select>
+    <update id="updateUserBalance">
+        update pc_user set balance=#{balance} where userid=#{userid}
+    </update>
+
+    <select id="countUserByWeekTime" resultType="data">
+        SELECT CASE DATE_FORMAT(createtime,'%w') WHEN 1 THEN '星期一'
+                   WHEN 2 THEN '星期二'
+                   WHEN 3 THEN '星期三'
+                   WHEN 4 THEN '星期四'
+                   WHEN 5 THEN '星期五'
+                   WHEN 6 THEN '星期六'
+                   WHEN 7 THEN '星期日'
+                   END
+                   as timename,count(*) as counts
+                   FROM pc_user WHERE YEARWEEK(date_format(createtime,'%Y-%m-%d'),1) = YEARWEEK(NOW(),1) group by day(createtime)
+    </select>
+    <select id="countUserByMothsTime" resultType="data">
+        SELECT CASE CEILING((DAY(createtime)+WEEKDAY(createtime-INTERVAL DAY(createtime)-1 DAY))/7)
+                   WHEN 1 THEN '第一周'
+                   WHEN 2 THEN '第二周'
+                   WHEN 3 THEN '第三周'
+                   WHEN 4 THEN '第四周'
+                   WHEN 5 THEN '第五周'
+                   WHEN 6 THEN '第六周'
+                   END as timename,count(*) as counts
+        FROM pc_user WHERE DATE_FORMAT(createtime,'%Y-%m-%d' )&gt;= (SELECT concat(date_format(LAST_DAY(now()),'%Y-%m-'),'01'))and DATE_FORMAT(createtime,'%Y-%m-%d' ) &lt;=(SELECT LAST_DAY(now())) group by timename
+    </select>
+
+    <select id="countUserByYearsTime" resultType="data">
+        select CASE DATE_FORMAT(createtime,'%Y-%m')
+        <foreach collection="years" item="singleYearMonth">
+            WHEN #{singleYearMonth} THEN #{singleYearMonth}
+        </foreach>
+        END timename,count(*) as counts from pc_user where createtime between date_sub(now(),interval 5 month) and now() group by month(createtime) ORDER BY timename;
+    </select>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--    自动扫包-->
+<!--    需要在mvc这边配置扫包，否则无法被mvc识别为controller，只会被spring当成一个默认的bean-->
+    <context:component-scan base-package="com.cykj.controller"/>
+
+    <!--    开放静态资源文件-->
+    <!--本项目把静态资源放在了WEB-INF的statics目录下，资源映射如下-->
+    <mvc:resources mapping="/css/**" location="/WEB-INF/css/"/>
+    <mvc:resources mapping="/js/**" location="/WEB-INF/js/"/>
+    <mvc:resources mapping="/natural/**" location="/WEB-INF/natural/"/>
+    <mvc:resources mapping="/upload/**" location="/WEB-INF/upload/"/>
+
+<!--    配置拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+<!--            拦截路径-->
+            <mvc:mapping path="/homepage"/>
+<!--            放行路径        exclude:排除-->
+<!--            <mvc:exclude-mapping path="/login"/>-->
+<!--            配置具体拦截器实现功能-->
+            <bean class="com.cykj.utils.BackInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+<!--    视图解析器配置-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--两个标准配置  -->
+    <!-- 将springmvc不能处理的请求交给tomcat -->
+    <mvc:default-servlet-handler/>
+    <!-- 能支持springmvc更高级的一些功能，JSR303校验，快捷的ajax...映射动态请求 -->
+    <mvc:annotation-driven/>
+
+<!--    设置返回数据类型的编码格式-->
+    <bean id="httpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+        <constructor-arg index="0" value="UTF-8"/>
+    </bean>
+
+<!--    Spring MVC用来提供Controller请求转发，json自动转换等功能-->
+    <!-- 处理器映射器 -->
+    <!-- 处理器适配器 -->
+    <!-- 启用默认配置 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <ref bean="httpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <!-- springmvc文件上传的配置 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+<!--        上传文件大小上限，单位为字节 -->
+        <property name="maxUploadSize" value="10485760" />
+        <property name="maxInMemorySize" value="4096" />
+<!--        编码设置-->
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+</beans>

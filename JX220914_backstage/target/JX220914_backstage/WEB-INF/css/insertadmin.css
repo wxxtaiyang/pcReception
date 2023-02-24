@@ -1,0 +1,16 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.adminfrom{
+    width: 600px;
+    padding: 20px;
+    background-color: rgba(237, 237, 237, 0.447);
+    border-radius: 20px;
+    box-shadow: 0px 0px 5px #000 inset;
+}
+.zixunshi{
+    display: none;
+}

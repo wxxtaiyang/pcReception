@@ -1,0 +1,28 @@
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 650px;
+}
+.father{
+    width: 800px;
+    padding: 20px;
+    background-color: rgba(239, 239, 239, 0.8);
+    border-radius: 20px;
+    box-shadow: 2px 2px 5px #000;
+}
+.title{
+    width: 100%;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+.words{
+    display: block;
+    font-size: 15px;
+    font-weight: bold;
+}
+.returns{
+    text-align: center;
+    margin-top: 20px;
+}

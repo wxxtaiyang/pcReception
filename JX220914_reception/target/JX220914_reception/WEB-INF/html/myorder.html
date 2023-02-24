@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="js/layui/css/layui.css">
+    <title>Document</title>
+</head>
+<style>
+    .layui-table, .layui-table-view {
+        margin: 0;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .layui-table {
+        width: 100% !important;
+    }
+</style>
+
+<body>
+<h1>预约列表</h1>
+<table class="layui-hide" id="orders" lay-filter="orders"></table>
+<script type="text/html" id="dateTime" lay-filter="dateTime">
+    <sapn type="" name="orderstate">
+        {{d.ordertime}}
+        {{# if(d.timeslot == 1){ }}
+        08:00~09:00
+        {{# } else if(d.timeslot == 2) { }}
+        09:00~10:00
+        {{# } else if(d.timeslot == 3) { }}
+        10:00~11:00
+        {{# } else if(d.timeslot == 4) { }}
+        11:00~12:00
+        {{# } else if(d.timeslot == 5) { }}
+        14:00~15:00
+        {{# } else if(d.timeslot == 6) { }}
+        15:00~16:00
+        {{# } else if(d.timeslot == 7) { }}
+        16:00~17:00
+        {{# } else if(d.timeslot == 8) { }}
+        17:00~18:00
+        {{# } }}
+    </sapn>
+</script>
+
+<script type="text/html" id="state" lay-filter="state">
+    <sapn type="" name="orderstate">
+        {{# if(d.orderstate == 0){ }}
+        预约失败
+        {{# } else if(d.orderstate == 1) { }}
+        已预约
+        {{# } else if(d.orderstate == 2) { }}
+        已确认
+        {{# } else if(d.orderstate == 3) { }}
+        已诊断
+        {{# } else if(d.orderstate == 4){ }}
+        已评价
+        {{# } else{ }}
+        已终止
+        {{# } }}
+    </sapn>
+</script>
+
+<script type="text/html" id="toolbarDemo" lay-filter="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">我要预约</button>
+    </div>
+</script>
+
+<script type="text/html" id="barDemo" lay-filter="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="look">查看详情</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="see">查看咨询师</a>
+    {{# if(d.orderstate == 3){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="evaluate">评价</a>
+    {{# } }}
+    {{# if(d.orderstate%10 == 5){ layer.msg("有预约被终止了");updateState(d)} }}
+</script>
+</body>
+<script src="js/layui/layui.js"></script>
+<script src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    ctxPath = /*[[@{/}]]*/ '';
+    /*]]>*/
+</script>
+<script th:inline="none">
+    // var table = layui.table;
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#orders',
+            url: 'order/query',
+            toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
+            cols: [[
+                {field: 'ordertime', title: '预约时间', width: '20%', templet: '#dateTime'}
+                , {field: 'adminname', title: '心理咨询师', width: '20%'}
+                , {field: 'fieldname', title: '领域', width: '10%'}
+                , {field: 'orderstate', title: '状态', templet: '#state', width: '20%'}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: '30%'}
+            ]],
+            limit: 5,
+            limits: [5, 10, 15, 20],
+            page: true
+        });
+        //头工具栏事件
+        table.on('toolbar(orders)', function (obj) {
+            layer.open({
+                type: 2,
+                shadeClose: true,
+                shade: 0.8,
+                title: '我要预约',
+                area: ['750px', '650px'],
+                content: 'addorder', //iframe的url
+                end:function () {
+                    table.reload('orders')
+                }
+            });
+        });
+
+        //监听行工具事件
+        table.on('tool(orders)', function (obj) {
+            var data = obj.data;
+            // 查看详情
+            if (obj.event === 'look') {
+                var url = encodeURI(JSON.stringify(data));
+                layer.open({
+                    type: 2,
+                    shadeClose: true,
+                    shade: 0.8,
+                    title: '查看详情',
+                    area: ['750px', '650px'],
+                    content: 'orderdetails?data='+url //iframe的url
+                });
+            }// 查看咨询师
+            else if (obj.event === 'see') {
+                layer.open({
+                    type: 2,
+                    shadeClose: true,
+                    shade: 0.8,
+                    title: '查看详情',
+                    area: ['750px', '650px'],
+                    content: 'admindetails?id='+data.adminid //iframe的url
+                });
+            }// 评价
+            else if(obj.event === "evaluate"){
+                var url = encodeURI(JSON.stringify(data));
+                layer.open({
+                    type: 2,
+                    shadeClose: true,
+                    shade: 0.8,
+                    title: '查看详情',
+                    area: ['750px', '650px'],
+                    content: 'adminrate?id='+url, //iframe的url
+                    end: function() {
+                        table.reload('orders');
+                    }
+                });
+            }
+        });
+    });
+
+    function updateState(obj) {
+        $.ajax({
+            url:'order/updatestate',
+            data:{
+                orderid:obj.orderid,
+                orderstate:obj.orderstate
+            },
+            type:'post',
+            dataType:'json',
+            success:function (res) {
+                console.log(res)
+            }
+        })
+    }
+</script>
+
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.OrdertimeMapper">
+    <select id="queryOrdertimeByAdminidAndDate" resultType="pcOrdertime">
+        select ordertimeint from pc_ordertime where adminid=#{adminid} and ordertimedate=#{data}
+    </select>
+
+    <insert id="insertOrdertimeByAdminidAndDate">
+        insert into pc_ordertime values
+        <foreach collection="list" item="item" separator=",">
+            (null,#{adminid},#{data},#{item},1)
+        </foreach>
+    </insert>
+
+    <delete id="deleteOrdertimeByAdminidAndDate">
+        delete from pc_ordertime where adminid=#{adminid} and ordertimedate=#{data}
+    </delete>
+</mapper>

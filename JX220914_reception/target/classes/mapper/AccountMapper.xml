@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.AccountMapper">
+    <insert id="insertAccount">
+        insert into pc_account
+        values(null,#{userid},#{adminid},now(),#{accountevent},#{accountsort},#{accountprice})
+    </insert>
+
+    <insert id="insertAdminacp">
+        insert into pc_adminacp
+        values(null,#{adminid},#{userid},now(),#{capsort},#{capprice})
+    </insert>
+
+    <select id="queryAccountByUserId" resultType="pcAccount">
+        select a.*,ad.adminname from pc_account a left join pc_admin ad on a.adminid=ad.adminid
+            where a.userid=#{userid}
+    </select>
+</mapper>

@@ -1,0 +1,66 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.father{
+    width: 700px;
+    max-height: 600px;
+    padding: 50px 100px;
+    border-radius: 20px;
+    box-shadow: 2px 2px 5px black;
+    background-color: rgba(239, 239, 239, 0.8);
+}
+.title{
+    text-align: center;
+    margin-bottom: 40px;
+}
+.field{
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+#field{
+    width: 190px;
+    height: 25px;
+    padding-left: 10px;
+    border: none;
+    box-shadow:1px 1px 2px black inset;
+}
+.name{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+#toppic li{
+    margin-bottom: 10px;
+    font-size: 15px;
+    list-style:circle;
+}
+.subject{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+.subject button{
+    padding: 1px;
+    margin-right:10px;
+}
+.options{
+    height: 20px;
+    display: flex;
+    align-items: center;
+}
+.options input{
+    margin-left: 20px;
+}
+.pages{
+    text-align: center;
+    margin-top: 10px;
+}
+.pages a{
+    cursor:pointer;
+}

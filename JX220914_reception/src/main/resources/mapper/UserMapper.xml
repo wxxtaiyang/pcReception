@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.UserMapper">
+    <select id="userLogin" resultType="pcUser">
+        select * from pc_user where useracc=#{acc} and userpwd=#{pwd} and isdelete=1
+    </select>
+
+    <insert id="userRgister">
+        insert into pc_user values(null,#{username},#{useracc},#{userpwd},
+            #{usersex},#{userage},#{userphone},#{address},0,1,now(),1)
+    </insert>
+
+    <select id="selectUserByUserAcc" resultType="pcUser">
+        select * from pc_user where useracc=#{acc}
+    </select>
+
+    <select id="selectUserByUserPhone" resultType="pcUser">
+        select * from pc_user where userphone=#{phone}
+    </select>
+
+    <update id="updateUserBalanceByUserid">
+        update pc_user set balance=#{balance} where userid=#{userid}
+    </update>
+    
+    <select id="queryUserByUserId" resultType="pcUser">
+        select * from pc_user where userid=#{userid};
+    </select>
+</mapper>

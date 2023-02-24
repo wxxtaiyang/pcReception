@@ -1,0 +1,39 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.father {
+    padding: 20px;
+    background-color: rgba(239, 239, 239, 0.8);
+    border-radius: 20px;
+    box-shadow: 2px 2px 5px #000;
+}
+.father>h1{
+    display: block;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.butt{
+    display: flex;
+    align-items: center;
+}
+
+div {
+    font-size: 20px;
+}
+
+span {
+    font-size: 20px !important;
+}
+
+#layui-laydate1,
+#layui-laydate2 {
+    width: 400px;
+}
+
+.layui-laydate-header,
+.layui-laydate-content table {
+    width: 380px;
+}

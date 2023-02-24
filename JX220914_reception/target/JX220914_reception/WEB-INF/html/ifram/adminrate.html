@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="js/layui/css/layui.css">
+    <title>Document</title>
+</head>
+<style>
+    .father {
+        width: 660px;
+        margin: 0 auto;
+        box-shadow: 1px 1px 200px white inset;
+        padding: 20px 20px;
+        border-radius: 50px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    #imgheader {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+    }
+
+    #backdrop {
+        width: 590px;
+        display: block;
+        word-break: break-all;
+    }
+
+    .text {
+        word-break: break-all;
+    }
+
+    .names {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+
+<body>
+<div class="father layui-form">
+    <h1>咨询师档案</h1>
+    <div class="layui-form-item" style="text-align:left;margin-top: 10px;">
+        <img src="natural/logo.png" id="imgheader" class="layui-form-label">
+        <div class="layui-input-block" id="adminname">咨询师姓名：</div>
+        <div class="layui-input-block" id="school">毕业院校 职称</div>
+        <div class="layui-input-block" id="fields">擅长领域： 亲子关系</div>
+        <div class="layui-input-block" id="price">服务价格： 500元/次</div>
+        <div id="backdrop" class="layui-input-block">专业背景：
+            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">评价：</label>
+        <div class="layui-input-block">
+            <textarea type="text" name="pro" id="pro" class="layui-input" style="min-height:100px;"></textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="text-align:center;margin:20px 0;">
+            <button class="layui-btn" onclick="addState()">提交</button>
+        </div>
+    </div>
+</div>
+</body>
+<script src="js/layui/layui.js"></script>
+<script src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    ctxPath = /*[[@{/}]]*/ '';
+    /*]]>*/
+</script>
+<script>
+    var url = window.location.href;
+    var obj = JSON.parse(decodeURI(url.split("=")[1]));
+    $(function () {
+        shows();
+    });
+    function shows() {
+        $.ajax({
+            url: 'field/admins',
+            data: {adminid: obj.adminid},
+            type: 'post',
+            dataType: 'json',
+            success: function (res) {
+                var admin = res.admin;
+                var fields = res.fields;
+                $('#imgheader').attr('src', admin.adminimg);
+                $('#adminname').html('咨询师姓名： ' + admin.adminname);
+                $('#school').html(admin.adminschool + '  ' + admin.admintitle);
+                var hms = '擅长领域： ';
+                fields.forEach((item, index) => {
+                    hms += item.fieldname + " ";
+                });
+                price = admin.adminprice;
+                $('#fields').html(hms);
+                $('#price').html('服务价格： ' + admin.adminprice + '元/次');
+                $('#backdrop').html('专业背景： ' + admin.socialcontext);
+            }
+        });
+    }
+    
+    function addState() {
+        $.ajax({
+            url:'order/updateresult',
+            data:{
+                orderid:obj.orderid,
+                result:$('#pro').val()
+            },
+            type:'post',
+            dataType: 'json',
+            success:function (res) {
+                if(res.flag){
+                    layer.msg(res.msg);
+                    setTimeout(function () {
+                        parent.layer.closeAll();
+                    },500);
+                }else{
+                    layer.msg(res.msg)
+                }
+            }
+        })
+    }
+</script>
+</html>

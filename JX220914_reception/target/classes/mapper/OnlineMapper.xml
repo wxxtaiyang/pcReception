@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.OnlineMapper">
+    <select id="queryOnlineByField" resultMap="allOnline">
+        select * from pc_onlinetopic where fieldid=#{fieldid}
+    </select>
+    <select id="queryOptionByOnlineId" resultType="pcOption">
+        select * from pc_option where onlineid=#{onlineid}
+    </select>
+    <resultMap id="allOnline" type="pcOnlinetopic">
+        <id property="onlineid" column="onlineid"/>
+        <result property="fieldid" column="fieldid"/>
+        <result property="onlinecontext" column="onlinecontext"/>
+        <collection property="options" javaType="list" ofType="pcOption" column="onlineid"
+                    select="queryOptionByOnlineId"/>
+    </resultMap>
+</mapper>

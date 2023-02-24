@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.OrderMapper">
+    <select id="selectAllOrder" resultType="pcOrder">
+        select o.*,u.username,f.fieldname,a.adminname from pc_order o inner join pc_user u on u.userid=o.userid
+            inner join pc_field f on o.fieldid=f.fieldid
+            inner join pc_admin a on o.adminid=a.adminid
+        <where>
+            <if test="min != null and min != '' ">
+                and o.ordertime &gt;= #{min}
+            </if>
+            <if test="max != null and max != ''">
+                and o.ordertime &lt;= #{max}
+            </if>
+            <choose>
+                <when test="adminarr.size() == 0">
+                    and o.adminid=0
+                </when>
+                <when test="adminarr.size() != 0">
+                    and o.adminid in
+                    <foreach collection="adminarr" item="item" separator="," open="(" close=")">
+                        #{item}
+                    </foreach>
+                </when>
+            </choose>
+            <choose>
+                <when test="userarr.size() == 0">
+                    and o.userid=0
+                </when>
+                <when test="userarr.size() != 0">
+                    and o.userid in
+                    <foreach collection="userarr" item="item" separator="," open="(" close=")">
+                        #{item}
+                    </foreach>
+                </when>
+            </choose>
+        </where>
+        limit #{index},#{size}
+    </select>
+
+    <select id="selectCountAllOrder" resultType="int">
+        select count(orderid) from pc_order
+        <where>
+            <if test="min != null and min != '' ">
+                and ordertime &gt;= #{min}
+            </if>
+            <if test="max != null and max != ''">
+                and ordertime &lt;= #{max}
+            </if>
+            <choose>
+                <when test="adminarr.size() == 0">
+                    and adminid=0
+                </when>
+                <when test="adminarr.size() != 0">
+                    and adminid in
+                    <foreach collection="adminarr" item="item" separator="," open="(" close=")">
+                        #{item}
+                    </foreach>
+                </when>
+            </choose>
+            <choose>
+                <when test="userarr.size() == 0">
+                    and userid=0
+                </when>
+                <when test="userarr.size() != 0">
+                    and userid in
+                    <foreach collection="userarr" item="item" separator="," open="(" close=")">
+                        #{item}
+                    </foreach>
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <select id="queryOrderByAdminId" resultType="pcOrder">
+        select o.*,u.username,f.fieldname from pc_order o inner join pc_user u on u.userid=o.userid
+            inner join pc_field f on o.fieldid=f.fieldid
+        <where>
+            adminid=#{adminid}
+            <if test="min != null and min != '' ">
+                and o.ordertime &gt;= #{min}
+            </if>
+            <if test="max != null and max != ''">
+                and o.ordertime &lt;= #{max}
+            </if>
+            <choose>
+                <when test="state &gt; -1 and state &lt; 5">
+                    and o.orderstate=#{state}
+                </when>
+                <when test="state &gt;= 5">
+                    and o.orderstate &gt;= #{state}
+                </when>
+            </choose>
+        </where>
+        limit #{index},#{size}
+    </select>
+
+    <select id="queryCountOrderByAdminId" resultType="int">
+        select count(orderid) from pc_order
+        <where>
+            adminid=#{adminid}
+            <if test="min != null and min != '' ">
+                and ordertime &gt;= #{min}
+            </if>
+            <if test="max != null and max != ''">
+                and ordertime &lt;= #{max}
+            </if>
+            <choose>
+                <when test="state &lt; -1 and state &gt; 5">
+                    and orderstate=#{state}
+                </when>
+                <when test="state &gt;= 5">
+                    and orderstate &gt;= #{state}
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <update id="updateStateOrderByOrderId">
+        update pc_order set orderstate=#{orderstate},updatetime=now() where orderid=#{orderid}
+    </update>
+
+    <update id="updateResultOrderByOrderId">
+        update pc_order set orderstate=3,updatetime=now(),orderresult=#{orderresult},resulttime=now()
+            where orderid=#{orderid}
+    </update>
+
+    <select id="countOrderGroupByAdminId" resultType="data">
+        select a.adminname as timename,count(o.orderid) as counts
+            from pc_order o right join pc_admin a on a.adminid=o.adminid
+        <where>
+            <if test="min != null and min != '' ">
+                and o.ordertime &gt;= #{min}
+            </if>
+            <if test="max != null and max != ''">
+                and o.ordertime &lt;= #{max}
+            </if>
+        </where>
+        group by timename
+    </select>
+</mapper>

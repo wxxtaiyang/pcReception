@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.AdminMapper">
+
+    <select id="adminLogin" resultType="pcAdmin">
+        select * from pc_admin where adminacc=#{acc} and adminpwd=#{pwd} and isdelete=1
+    </select>
+
+    <select id="checkAdminByAcc" resultType="int">
+        select count(adminid) from pc_admin where adminacc=#{acc} and isdelete=1
+    </select>
+
+    <select id="limitQueryAdminByNameAndAcc" resultType="pcAdmin">
+        select a.*,r.rolename from pc_admin a inner join pc_role r on a.roleid=r.roleid
+        <where>
+            isdelete = 1
+            <if test="name != null">
+                and a.adminname like concat('%',#{name},'%')
+            </if>
+            <if test="state != -1">
+                and a.adminstate=#{state}
+            </if>
+        </where>
+        order by adminname limit #{index},#{size}
+    </select>
+
+    <select id="queryAllAdminByNameAndAcc" resultType="int">
+        select count(*) from pc_admin
+        <where>
+            isdelete = 1
+            <if test="name != null">
+                and adminname like concat('%',#{name},'%')
+            </if>
+            <if test="state != -1">
+                and adminstate=#{state}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addAdmin" keyProperty="adminid" useGeneratedKeys="true">
+        insert into pc_admin values(null,#{roleid},#{adminname},#{adminacc},#{adminpwd},
+            1,#{adminimg},#{socialcontext},#{adminschool},#{admintitle},#{adminprice},0,1)
+    </insert>
+
+    <update id="updateAdminState">
+        update pc_admin set adminstate = !adminstate where adminid=#{adminid}
+    </update>
+
+    <update id="resetAdminPwdByAdminid">
+        update pc_admin set adminpwd=#{adminpwd} where adminid=#{adminid}
+    </update>
+
+    <update id="delAdminByAdminId">
+        update pc_admin set isdelete=0 where adminid=#{adminid}
+    </update>
+
+    <select id="selectAdminByAdminId" resultType="pcAdmin">
+        select * from pc_admin where adminid=#{adminid}
+    </select>
+
+    <select id="selectIdByAdminName" resultType="int">
+        select adminid from pc_admin where adminname like concat('%',#{adminname},'%')
+        and isdelete=1 and roleid=3
+    </select>
+    <update id="updateAdminbalance">
+        update pc_admin set adminbalance=#{adminbalance} where adminid=#{adminid}
+    </update>
+
+    <select id="queryAdminName" resultType="string">
+        select adminname from pc_admin where isdelete=1 and roleid=#{roleid}
+    </select>
+</mapper>

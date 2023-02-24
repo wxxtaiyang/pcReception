@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.FieldMapper">
+    <select id="queryAllField" resultType="pcField">
+        select * from pc_field
+    </select>
+
+    <select id="queryAdminByFieldId" resultType="pcAdmin">
+        select a.adminid,a.adminname from
+            pc_admin_field af inner join pc_admin a on af.adminid=a.adminid
+            where af.fieldid=#{fieldid}
+    </select>
+
+    <select id="queryAllByAdminidDatetime" resultType="pcOrdertime">
+        select * from pc_ordertime where adminid=#{adminid} and ordertimedate=#{time}
+    </select>
+</mapper>

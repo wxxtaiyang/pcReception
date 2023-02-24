@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.OrderMapper">
+    <select id="querAllOrderByUserId" resultType="pcOrder">
+        select o.*,f.fieldname,a.adminname
+        from pc_order o inner join pc_field f on o.fieldid=f.fieldid
+                inner join pc_admin a on o.adminid=a.adminid
+        where userid=#{userid} limit #{index},#{size}
+    </select>
+    <select id="querAllLengthOrderByUserId" resultType="int">
+        select count(orderid) from pc_order where userid=#{userid}
+    </select>
+
+    <insert id="insertOreder">
+        insert  into  pc_order(userid,fieldid,adminid,orderstate,ordertime,timeslot,orderproblem,createtime)
+            values(#{userid},#{fieldid},#{adminid},#{orderstate},#{ordertime},#{timeslot},#{orderproblem},now());
+    </insert>
+
+    <select id="queryOrdertimeByDateAndTime" resultType="pcOrdertime">
+        select * from pc_ordertime where ordertimedate=#{date} and ordertimeint=#{time} and adminid=#{adminid}
+    </select>
+
+    <update id="updateOrdertimeByDateAndTime">
+        update pc_ordertime set orderstate=2
+            where ordertimedate=#{date} and ordertimeint=#{time} and adminid=#{adminid}
+    </update>
+
+    <select id="queryOrdersByAdminId" resultType="pcOrder">
+        select o.*,u.username from pc_order o inner join pc_user u on o.userid=u.userid
+            where adminid=#{adminid}
+    </select>
+
+    <update id="updateOrderResultAndState">
+        update pc_order set orderstate=4,orderrate=#{orderrate},ratetime=now(),updatetime=now()
+            where orderid=#{orderid}
+    </update>
+
+    <update id="updateOrderStateByOrderId">
+        update pc_order set orderstate=#{orderstate},updatetime=now() where orderid=#{orderid}
+    </update>
+</mapper>

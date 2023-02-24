@@ -1,0 +1,39 @@
+.father{
+    background-image: url('../natural/homeback.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.hearder{
+    width: 100%;
+    height: 60px;
+}
+.adminname{
+    position: absolute;
+    right: 30px;
+    font-size: 18px;
+    color: #606060;
+    top: 0;
+}
+.title{
+    text-align: center;
+    display: block;
+    line-height: 60px;
+}
+.main{
+    flex: 1;
+    display: flex;
+}
+.right{
+    flex: 1;
+    overflow: hidden;
+}
+.right iframe{
+    border: none;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
